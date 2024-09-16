@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import { useContext } from "react";
-import { MovieContext } from "../../Store";
+import { DataContext } from "../../Store";
 export default function Home() {
-  let { trendingMovies, trendingTv, trendingPeople } =
-    useContext(MovieContext);
+  let { trendingMovies, trendingTv, trendingPeople } = useContext(DataContext);
   return (
     <>
       <div className="container">
