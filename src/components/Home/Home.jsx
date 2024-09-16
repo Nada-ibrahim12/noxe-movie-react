@@ -52,7 +52,7 @@ export default function Home() {
                   src={"https://image.tmdb.org/t/p/w500" + tv.poster_path}
                   alt=""
                 />
-                <h3 className="h6 my-3">{tv.title}</h3>
+                <h3 className="h6 my-3">{tv.name}</h3>
               </Link>
             </div>
           ))}
