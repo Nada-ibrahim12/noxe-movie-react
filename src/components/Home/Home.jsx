@@ -3,7 +3,8 @@ import React from "react";
 import { useContext } from "react";
 import { MovieContext } from "../../Store";
 export default function Home() {
-  let { trindeingMovies, trindeingTv } = useContext(MovieContext);
+  let { trendingMovies, trendingTv, trendingPeople } =
+    useContext(MovieContext);
   return (
     <>
       <div className="container">
@@ -18,7 +19,7 @@ export default function Home() {
               <div className="brd mt-4"></div>
             </div>
           </div>
-          {trindeingMovies.map((movie, i) => (
+          {trendingMovies.map((movie, i) => (
             <div key={i} className="col-md-2">
               <Link to={`/moviedetails/${movie.id}`}>
                 <img
@@ -44,7 +45,7 @@ export default function Home() {
               <div className="brd mt-4"></div>
             </div>
           </div>
-          {trindeingTv.map((tv, i) => (
+          {trendingTv.map((tv, i) => (
             <div key={i} className="col-md-2">
               <Link to={`/moviedetails/${tv.id}`}>
                 <img
@@ -53,6 +54,33 @@ export default function Home() {
                   alt=""
                 />
                 <h3 className="h6 my-3">{tv.title}</h3>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-md-4 d-flex  align-items-center">
+            <div>
+              <div className="brd w-25 mb-4"></div>
+              <h2 className="h3">
+                Trending <br /> People <br /> To Watch Right Now
+              </h2>
+              <p className="text-primary">Top Trending People by Day</p>
+              <div className="brd mt-4"></div>
+            </div>
+          </div>
+          {trendingPeople.map((person, i) => (
+            <div key={i} className="col-md-2">
+              <Link to={`/moviedetails/${person.id}`}>
+                <img
+                  className="w-100"
+                  src={"https://image.tmdb.org/t/p/w500" + person.profile_path}
+                  alt={person.name}
+                />
+                <h3 className="h6 my-3">{person.name}</h3>
               </Link>
             </div>
           ))}
