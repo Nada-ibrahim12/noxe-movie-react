@@ -5,10 +5,12 @@ import { Link } from "react-router-dom";
 export default function Movies() {
   let [trindeingMovies, setTrindeingMovies] = useState([]);
   let num = new Array(13).fill(1).map((element, i) => i + 1);
+      const apiKey = "3f69a27835865c05f6ed1c043a44735a";
+
 
   async function getMovies(page) {
     let { data } = await axios.get(
-      `https://api.themoviedb.org/3/discover/movie?api_key=c9fac173689f5f01ba1b0420f66d7093&include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`
+      `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=popularity.desc`
     );
     setTrindeingMovies(data.results);
   }

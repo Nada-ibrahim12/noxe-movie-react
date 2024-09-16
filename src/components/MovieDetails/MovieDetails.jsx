@@ -5,9 +5,13 @@ import { useParams } from 'react-router-dom'
 export default function MovieDetails() {
     let [movie_id, setMovie_id] = useState(null)
     let parm = useParams();
-    let url_id = parm.id
+    let url_id = parm.id;
+    const apiKey = "3f69a27835865c05f6ed1c043a44735a";
+
     async function getmovie(id) {
-        let { data } = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=c9fac173689f5f01ba1b0420f66d7093&language=eg-US`)
+        let { data } = await axios.get(
+          `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=eg-US`
+        );
         setMovie_id(data);
     }
     useEffect(() => {

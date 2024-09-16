@@ -7,11 +7,13 @@ export default function PersonDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id: urlId } = useParams();
+      const apiKey = "3f69a27835865c05f6ed1c043a44735a";
+
 
   async function getPerson(id) {
     try {
       const { data } = await axios.get(
-        `https://api.themoviedb.org/3/person/${id}?api_key=c9fac173689f5f01ba1b0420f66d7093&language=en-US`
+        `https://api.themoviedb.org/3/person/${id}?api_key=${apiKey}&language=en-US`
       );
       setPersonId(data);
     } catch (err) {
