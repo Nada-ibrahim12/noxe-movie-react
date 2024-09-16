@@ -32,6 +32,32 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-md-4 d-flex  align-items-center">
+            <div>
+              <div className="brd w-25 mb-4"></div>
+              <h2 className="h3">
+                Trending <br /> Tv <br /> To Watch Right Now
+              </h2>
+              <p className="text-primary">Top Trending Tv by Day</p>
+              <div className="brd mt-4"></div>
+            </div>
+          </div>
+          {trindeingTv.map((tv, i) => (
+            <div key={i} className="col-md-2">
+              <Link to={`/moviedetails/${tv.id}`}>
+                <img
+                  className="w-100"
+                  src={"https://image.tmdb.org/t/p/w500" + tv.poster_path}
+                  alt=""
+                />
+                <h3 className="h6 my-3">{tv.title}</h3>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 }
