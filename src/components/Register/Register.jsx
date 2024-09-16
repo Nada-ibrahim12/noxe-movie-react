@@ -1,78 +1,150 @@
-import axios from 'axios';
-import Joi from 'joi';
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import Joi from "joi";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 export default function Register() {
-  let[isLoding,setIsLoading]=useState(false)
-  let[error,setError]=useState([])
-  let navigate =useNavigate() ;
+  let [isLoding, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
 
-  let [user,setUser]=useState(
-    {
-      username:'',
-      email:'',
-      password:'',
-      passwordConfirm:''
+  const [formData, setFormData] = useState({
+    userName: "",
+    email: "",
+    password: "",
+    rePassword: "",
+    dateOfBirth: "",
+  });
+
+  function getUser(e) {
+    let data = { ...formData };
+    data[e.target.name] = e.target.value;
+    setFormData(data);
+  }
+
+  function submitRegisterForm(e) {
+    e.preventDefault();
+    let statusError = validation();
+    if (statusError?.error) {
+      setErrors(statusError?.error.details);
+    } else {
+      setIsLoading(true);
+      axios
+        .post("http://hawas.runasp.net/api/v1/Register", formData)
+        .then((res) => {
+          console.log(res.data);
+          localStorage.setItem("currentUser", formData.email);
+          setIsLoading(false);
+          navigate("/Login");
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsLoading(false);
+          setError(err.response?.data?.message || "Registration failed");
+        });
     }
-  )
-  function getUser(e){
-      let userData = {...user} //deep copy
-      userData[e.target.name] = e.target.value;
-      setUser(userData);
   }
 
-  async function submitRegisterForm(e){
-    setIsLoading(true)
-    e.preventDefault()
-    let validateResult = valdation();
-    if(validateResult.error)
-   {
-      setIsLoading(false)
-      setError(validateResult.error.details)
-   }
-   else{
-    setError([]);
-    setIsLoading(true)
-    navigate("/Login");
-   }
+  function validation() {
+    let schema = Joi.object({
+      userName: Joi.string().alphanum().min(3).max(30).required(),
+      email: Joi.string()
+        .email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "net"] },
+        })
+        .required(),
+      password: Joi.string()
+        .min(8)
+        .max(30)
+        .pattern(
+          new RegExp(
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$"
+          )
+        )
+        .required()
+        .messages({
+          "string.base": "Password must be a string",
+          "string.empty": "Password cannot be empty",
+          "string.min": "Password must be at least {#limit} characters long",
+          "string.max":
+            "Password must be less than or equal to {#limit} characters",
+          "string.pattern.base":
+            "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+          "any.required": "Password is required",
+        }),
+      rePassword: Joi.any().valid(Joi.ref("password")).required().messages({
+        "any.only": "Passwords do not match",
+      }),
+      dateOfBirth: Joi.date().iso().max("2020-12-31").required().messages({
+        "date.max": "You must be born before 2021",
+      }),
+    });
+    return schema.validate(formData, { abortEarly: false });
   }
-
-  function valdation(){
-    let schema=Joi.object({
-      username : Joi.string().alphanum().min(3).max(10).required(),
-      email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-      password : Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-      passwordConfirm : Joi.ref('password'),
-
-    })
-    return schema.validate(user,{abortEarly:false})
-
-  }
-
 
   return (
     <>
-    <div className='w-75 mx-auto'>
-      <h2 className='text-center'>Register Now</h2>
-      {error.map((error,i)=><div key={i} className='alert alert-danger' >{error.message}</div>)}
+      <div className="w-75 mx-auto mt-5">
+        <h2 className="text-center mb-4">Register Now</h2>
+        {error && <div className="alert alert-danger">{error}</div>}
+        {errors.map((error, i) => (
+          <div key={i} className="alert alert-danger">
+            {error.message}
+          </div>
+        ))}
         <form onSubmit={submitRegisterForm}>
-        <label htmlFor="username">user name : </label>
-          <input onChange={getUser} className='form-control mb-2' type="text" id='username' name='username' />
-          
-          <label htmlFor="email">email : </label>
-          <input onChange={getUser} className='form-control mb-2' type="email" id='email' name='email' />
+          <label htmlFor="userName">User Name:</label>
+          <input
+            onChange={getUser}
+            className="form-control mb-4"
+            type="text"
+            id="userName"
+            name="userName"
+          />
 
-          <label htmlFor="password">password : </label>
-          <input onChange={getUser} className='form-control mb-2' type="password" id='password' name='password' />
+          <label htmlFor="email">Email:</label>
+          <input
+            onChange={getUser}
+            className="form-control mb-4"
+            type="email"
+            id="email"
+            name="email"
+          />
 
-          <label htmlFor="passwordConfirm">passwordConfirm : </label>
-          <input onChange={getUser} className='form-control mb-2' type="password" id='passwordConfirm' name='passwordConfirm' />
+          <label htmlFor="dateOfBirth">Birth Date:</label>
+          <input
+            onChange={getUser}
+            className="form-control mb-4"
+            type="date"
+            id="dateOfBirth"
+            name="dateOfBirth"
+          />
 
-          <button  type='submit' className='btn btn-outline-info my-2' >{isLoding ? <i className='fas fa-spinner fa-spin'></i>:"Register"} </button>
+          <label htmlFor="password">Password:</label>
+          <input
+            onChange={getUser}
+            className="form-control mb-4"
+            type="password"
+            id="password"
+            name="password"
+          />
 
+          <label htmlFor="rePassword">Confirm Password:</label>
+          <input
+            onChange={getUser}
+            className="form-control mb-4"
+            type="password"
+            id="rePassword"
+            name="rePassword"
+          />
+
+          <button type="submit" className="btn btn-outline-info my-2">
+            {isLoding ? <i className="fas fa-spinner fa-spin"></i> : "Register"}
+          </button>
         </form>
-    </div>
-      
+      </div>
     </>
-  )
+  );
 }
