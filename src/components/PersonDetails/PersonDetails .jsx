@@ -1,14 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import profile from "../../assets/profile.jpg";
 
 export default function PersonDetails() {
   const [personId, setPersonId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id: urlId } = useParams();
-      const apiKey = "3f69a27835865c05f6ed1c043a44735a";
-
+  const apiKey = "3f69a27835865c05f6ed1c043a44735a";
 
   async function getPerson(id) {
     try {
@@ -52,7 +52,11 @@ export default function PersonDetails() {
           <div className="col-md-3">
             <img
               className="w-100"
-              src={"https://image.tmdb.org/t/p/w500" + personId?.profile_path}
+              src={
+                personId?.profile_path
+                  ? "https://image.tmdb.org/t/p/w500" + personId?.profile_path
+                  : profile
+              }
               alt={personId?.name}
             />
           </div>

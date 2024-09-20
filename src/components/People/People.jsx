@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import profile from "../../assets/profile.jpg";
 
 export default function People() {
   const [trendingPeople, setTrendingPeople] = useState([]);
@@ -45,7 +46,11 @@ export default function People() {
               <Link to={`/persondetails/${person.id}`}>
                 <img
                   className="w-100"
-                  src={`https://image.tmdb.org/t/p/w500${person.profile_path}`}
+                  src={
+                    person.profile_path
+                      ? `https://image.tmdb.org/t/p/w500${person.profile_path}`
+                      : profile 
+                  }
                   alt={person.name}
                 />
                 <h3 className="h6 my-3">{person.name}</h3>
